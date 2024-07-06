@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  
+    <div class="dashboard-container">
+        <h1 class="dash">Welcome to the Online Quiz</h1>
+        <div class="btn">
+          <button id="logoutButton">Logout</button>
+          <button id="createMcqButton">Create MCQ Questions</button>
+          <button id="takeQuizButton">Start a Quiz</button>
+          <button id="viewLibraryButton">View Library</button>
+        </div>
+        <div id="mcqFormContainer">
+            <h2>Create a New MCQ</h2>
+            <form id="mcqForm">
+                <input type="text" id="question" placeholder="Enter your question" required>
+                <div>
+                    <label for="option1">a)</label> <input type="text" class="mcq-option" id="option1" placeholder="Option 1" required><br>
+                    <label for="option2">b)</label> <input type="text" class="mcq-option" id="option2" placeholder="Option 2" required><br>
+                    <label for="option3">c)</label> <input type="text" class="mcq-option" id="option3" placeholder="Option 3" required><br>
+                    <label for="option4">d)</label> <input type="text" class="mcq-option" id="option4" placeholder="Option 4" required><br>
+                </div>
+                <div>
+                    <label for="correctAnswer">Correct Answer (a, b, c, or d):</label>
+                    <input type="text" id="correctAnswer" name="correctAnswer" pattern="[abcd]" required>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div id="questionsContainer">
+            <h2>Questions</h2>
+            <div id="questionsList"></div>
+        </div>
+
+        <div id="quizContainer">
+            <h2>Quiz Questions</h2>
+            <form id="quizForm">
+                <div id="quizQuestions"></div>
+                <button id="submitQuiz" type="button">Submit Quiz</button>
+            </form>
+        </div>
+
+        <div id="libraryContainer">
+            <h2>Library</h2>
+            <div id="libraryList"></div>
+        </div>
+
+        <div id="resultContainer" style="display:none;"></div> <!-- New container for result -->
+
+    </div>
+    
+  <script >
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      window.location.href = 'index.html';
+    });
+
+    // Example of using the token for authenticated requests
+    async function fetchProtectedData() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('No token found, redirecting to login');
+        window.location.href = 'index.html';
+      } else {
+        const result = await fetch('http://localhost:3000/api/protected', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }).then(res => res.json());
+
+        console.log('Protected data:', result);
+      }
+    }
+
+    fetchProtectedData();
+    
+  </script>
+
+<script src="newScripts.js"></script>
+</body>
+</html>
