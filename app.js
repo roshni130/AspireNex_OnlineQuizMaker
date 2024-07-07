@@ -5,7 +5,6 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const app = express();
 
-// MongoDB connection
 mongoose.connect('mongodb://127.0.0.1:27017/onlineQuizDB', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -13,7 +12,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/onlineQuizDB', {
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.error('MongoDB connection error:', err));
 
-// Schemas
+
 const UserSchema = new mongoose.Schema({
   username: String,
   email: String,
@@ -30,12 +29,12 @@ const MCQSchema = new mongoose.Schema({
 
 const MCQ = mongoose.model('MCQ', MCQSchema);
 
-// Middleware
+
 app.use(cors());
 app.use(express.json());
 
-// Routes
-// Register user
+
+
 app.post('/api/register', async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -55,7 +54,7 @@ app.post('/api/register', async (req, res) => {
   res.status(201).json({ success: true });
 });
 
-// Login user
+
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -73,7 +72,7 @@ app.post('/api/login', async (req, res) => {
   res.json({ success: true, token });
 });
 
-// Middleware to authenticate JWT
+
 const authenticateJWT = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) {
@@ -88,7 +87,7 @@ const authenticateJWT = (req, res, next) => {
   }
 };
 
-// Create MCQ
+
 app.post('/api/mcq', authenticateJWT, async (req, res) => {
   const { question, options, correctAnswer } = req.body;
 
@@ -106,13 +105,13 @@ app.post('/api/mcq', authenticateJWT, async (req, res) => {
   res.status(201).json({ success: true, message: 'MCQ created successfully' });
 });
 
-// Get all MCQs
+
 app.get('/api/mcq', authenticateJWT, async (req, res) => {
   const mcqs = await MCQ.find();
   res.status(200).json(mcqs);
 });
 
-// Delete MCQ by ID
+
 app.delete('/api/mcq/:id', authenticateJWT, async (req, res) => {
   try {
     const { id } = req.params;
@@ -126,8 +125,7 @@ app.delete('/api/mcq/:id', authenticateJWT, async (req, res) => {
   }
 });
 
-// Submit Quiz
-// Submit Quiz
+
 app.post('/api/submit-quiz', authenticateJWT, async (req, res) => {
   const { answers } = req.body;
 
@@ -152,7 +150,7 @@ app.post('/api/submit-quiz', authenticateJWT, async (req, res) => {
 });
 
 
-// Start server
+
 const port = 3000;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
